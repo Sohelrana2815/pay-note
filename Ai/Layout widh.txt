@@ -1,0 +1,5 @@
+I am not using this as my root layout. I don’t want to include the Navbar and Footer in the root layout, so I created a separate folder structure: src/app/(pay-note)/layout.tsx (MainLayout) and page.tsx as the main page container for all components.
+
+I want to avoid repeatedly using max-w-7xl throughout my components. My goal is to keep the main content constrained to max-w-7xl, while the Navbar and Footer remain full width (full screen).
+
+How can I achieve this layout properly without repeating the width class everywhere?

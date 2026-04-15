@@ -1,0 +1,13 @@
+import Footer from "@/components/shared/footer";
+import Navbar from "@/components/shared/navbar";
+
+const MainLayout = () => {
+  return (
+    <section>
+      <Navbar />
+      <Footer />
+    </section>
+  );
+};
+
+export default MainLayout;
