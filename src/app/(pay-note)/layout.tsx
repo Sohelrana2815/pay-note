@@ -10,6 +10,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         {children}
       </main>
       {/* Footer is full width by default */}
+
       <Footer />
     </div>
   );

@@ -1,0 +1,61 @@
+First give me samll part give me form and input fields first i want to create first the form like the left side part which contain: Document Details
+
+Fill in the details to generate your document. text.
+
+Document type: invoice or receipt
+
+
+
+*** Business details
+
+  Business Name
+
+Logo URL 
+
+Receipt Number
+
+Date
+
+***Client Details
+
+Client Name
+
+Client Email/phone field
+
+***Items 
+
+Add Item button
+
+Item Name
+
+Qty
+
+Price 
+
+Delete button
+
+*** Totals & Adjustments
+
+Tax Rate %
+
+Descount %
+
+
+
+*** Additional Information
+
+Payment Mehod / Terms
+
+Notes
+
+fist i want to complete the form, don't need logic just need the layout and form input fields and it's related buttons like Add Item
+Delete Trash
+
+Later i will add the logic use shadcn form component 
+and it' related input fields
+
+
+
+I gave you the image of the form as well now correct the grammer mistakes and improve the prompt wo i can get better result form AI
+
+
