@@ -258,7 +258,7 @@ const InvoiceForm = () => {
                 <FieldLegend variant="label" className="mb-0">
                   Items
                 </FieldLegend>
-                <FieldDescription>Add up to 10 items.</FieldDescription>
+                <FieldDescription>Add up to 7 items.</FieldDescription>
                 {form.formState.errors.items?.root && (
                   <FieldError errors={[form.formState.errors.items.root]} />
                 )}

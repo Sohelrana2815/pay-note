@@ -1,10 +1,10 @@
 const Hero = () => {
   return (
-    <div className="text-center space-y-5">
+    <div className="text-center space-y-5 ">
       <h3 className="border inline rounded-full px-2">
         Free • No Sign-up • Instant Download
       </h3>
-      <h2 className="text-2xl md:text-4xl lg:text-5xl">
+      <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold">
         Create Professional Invoices & <br /> Receipts Instantly
       </h2>
       <p className="text-lg ">
