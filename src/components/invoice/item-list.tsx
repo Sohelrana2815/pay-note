@@ -1,0 +1,141 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { InvoiceValues } from "@/types";
+import { Control, Controller, useFieldArray } from "react-hook-form";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "../ui/field";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+
+interface ItemListProps {
+  control: Control<InvoiceValues>;
+  errors: any;
+}
+
+const MAX_ITEMS = 10;
+
+const ItemList = ({ control, errors }: ItemListProps) => {
+  const {
+    fields: items,
+    append: addItem,
+    remove: removeItem,
+  } = useFieldArray({
+    control,
+    name: "items",
+  });
+
+  return (
+    <FieldSet>
+      <div className="flex justify-between items-center gap-2">
+        <FieldContent>
+          <FieldLegend variant="label" className="mb-0">
+            Items
+          </FieldLegend>
+          <FieldDescription>Add up to {MAX_ITEMS} items.</FieldDescription>
+          {errors?.root && <FieldError errors={[errors.root]} />}
+        </FieldContent>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={items.length >= MAX_ITEMS} // 👈 cap enforced here
+          onClick={() =>
+            addItem({
+              itemName: "",
+              itemQuantity: 1,
+              itemPrice: 0,
+            })
+          }
+        >
+          + Add Item
+        </Button>
+      </div>
+      <FieldGroup>
+        {items.map((item, index) => (
+          <div
+            key={item.id}
+            className="flex items-center justify-center gap-2 p-3 border rounded-md"
+          >
+            {/* Item Name */}
+            <Controller
+              control={control}
+              name={`items.${index}.itemName` as const}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>Item Name</FieldLabel>
+                  <Input {...field} id={field.name} />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            {/* Quantity */}
+            <Controller
+              control={control}
+              name={`items.${index}.itemQuantity` as const}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>Quantity</FieldLabel>
+                  <Input
+                    {...field}
+                    id={field.name}
+                    type="number"
+                    min={1}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            {/* Price */}
+            <Controller
+              control={control}
+              name={`items.${index}.itemPrice` as const}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>Price</FieldLabel>
+                  <Input
+                    {...field}
+                    id={field.name}
+                    type="number"
+                    min={0}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            {/* Remove */}
+            <Button
+              type="button"
+              className="relative top-3"
+              variant="ghost"
+              size="sm"
+              disabled={items.length === 1} // 👈 minimum 1 item enforced
+              onClick={() => removeItem(index)}
+            >
+              Remove
+            </Button>
+          </div>
+        ))}
+      </FieldGroup>
+    </FieldSet>
+  );
+};
+
+export default ItemList;

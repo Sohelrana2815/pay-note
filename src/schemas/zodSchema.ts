@@ -4,8 +4,8 @@ export const invoiceTypes = ["Invoice", "Receipt"] as const;
 
 export const itemSchema = z.object({
   itemName: z.string().nonempty("Item Name is required"),
-  itemQuantity: z.number().nonnegative("Item Quantity is required"),
-  itemPrice: z.number().nonnegative("Item Price is required"),
+  itemQuantity: z.number().positive("At least one item is required"),
+  itemPrice: z.number().positive("Item Price is required"),
 });
 
 export const invoiceSchema = z.object({
@@ -15,20 +15,20 @@ export const invoiceSchema = z.object({
   businessName: z
     .string()
     .nonempty("Business Name is required")
-    .min(3, "Business Name must be at least 3 characters")
-    .max(100, "Business Name cannot exceed 100 characters"),
+    .min(3, "Business name must be at least 3 characters")
+    .max(100, "Business name cannot exceed 100 characters"),
   logoUrl: z.url("Invalid URL").optional().or(z.literal("")),
   invoiceNumber: z
     .string()
     .nonempty("Invoice Number is required")
-    .min(3, "Invoice Number must be at least 3 characters"),
+    .min(3, "Invoice No. must be at least 3 characters"),
   date: z.date(),
   // Client Detail
   clientName: z
     .string()
     .nonempty("Client Name is required")
-    .min(3, "Client Name must be at least 3 characters long")
-    .max(100, "Client Name must be at most 100 characters long"),
+    .min(3, "Client name must be at least 3 characters")
+    .max(100, "Client name cannot exceed 100 characters"),
 
   clientEmail: z.email("Invalid email").optional().or(z.literal("")),
   clientPhone: z

@@ -1,23 +1,18 @@
 "use client";
 
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Field,
-  FieldContent,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
-  FieldLegend,
   FieldSeparator,
-  FieldSet,
 } from "../ui/field";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { invoiceSchema, invoiceTypes } from "@/schemas/zodSchema";
-import { z } from "zod";
 import {
   Select,
   SelectContent,
@@ -26,11 +21,12 @@ import {
   SelectValue,
 } from "../ui/select";
 
-import { Trash } from "lucide-react";
+import { Copy, FileDown, Printer, RotateCcw } from "lucide-react";
 import { Textarea } from "../ui/textarea";
+import { InvoiceValues } from "@/types";
+import ItemList from "./item-list";
 
 const InvoiceForm = () => {
-  type InvoiceValues = z.infer<typeof invoiceSchema>;
   const form = useForm<InvoiceValues>({
     defaultValues: {
       type: "Invoice" as const,
@@ -42,7 +38,7 @@ const InvoiceForm = () => {
       // Client Detail
       clientName: "",
       clientEmail: "",
-      clientPhone: "+8801",
+      clientPhone: "",
       // Items
       items: [
         {
@@ -58,21 +54,14 @@ const InvoiceForm = () => {
     mode: "onChange",
   });
 
-  const {
-    fields: items,
-    append: addItem,
-    remove: removeItem,
-  } = useFieldArray({
-    control: form.control,
-    name: "items",
-  });
+  // --- Handlers ---
 
   const onSubmit = (data: InvoiceValues) => {
     console.log("Form Data:", data);
   };
 
   return (
-    <div className="max-w-xl">
+    <div className="w-full">
       <form onSubmit={form.handleSubmit(onSubmit)}>
         {/* Business info */}
         <FieldGroup className="border px-6 py-4 rounded-md">
@@ -252,122 +241,10 @@ const InvoiceForm = () => {
 
           <FieldSeparator />
           {/* 9. Items */}
-          <FieldSet>
-            <div className="flex justify-between items-center gap-2">
-              <FieldContent>
-                <FieldLegend variant="label" className="mb-0">
-                  Items
-                </FieldLegend>
-                <FieldDescription>Add up to 10 items.</FieldDescription>
-                {form.formState.errors.items?.root && (
-                  <FieldError errors={[form.formState.errors.items.root]} />
-                )}
-              </FieldContent>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  addItem({
-                    itemName: "",
-                    itemQuantity: 1,
-                    itemPrice: 0,
-                  })
-                }
-              >
-                + Add Item
-              </Button>
-            </div>
-            <FieldGroup>
-              {items.map((item, index) => (
-                <div
-                  key={item.id}
-                  className="flex items-start  gap-2 p-3 border rounded-md"
-                >
-                  {/* Item Name */}
-                  <Controller
-                    control={form.control}
-                    name={`items.${index}.itemName` as const}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor={field.name}>Item Name</FieldLabel>
-
-                        <Input
-                          {...field}
-                          id={field.name}
-                          aria-invalid={fieldState.invalid}
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-
-                  {/* Item Quantity */}
-                  <Controller
-                    control={form.control}
-                    name={`items.${index}.itemQuantity` as const}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor={field.name}>Quantity</FieldLabel>
-                        <Input
-                          {...field}
-                          id={field.name}
-                          type="number"
-                          min={1}
-                          aria-invalid={fieldState.invalid}
-                          onChange={(e) =>
-                            field.onChange(Number(e.target.value))
-                          }
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-
-                  {/* Item Price */}
-                  <Controller
-                    control={form.control}
-                    name={`items.${index}.itemPrice` as const}
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor={field.name}>Price</FieldLabel>
-                        <Input
-                          type="number"
-                          {...field}
-                          id={field.name}
-                          min={0}
-                          placeholder="0.00"
-                          aria-invalid={fieldState.invalid}
-                          onChange={(e) =>
-                            field.onChange(Number(e.target.value))
-                          }
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
-                  <div className="relative">
-                    <Button
-                      className="text-red-500 hover:text-red-600 cursor-pointer absolute top-0 right-0"
-                      type="button"
-                      variant="ghost"
-                      size="icon-xs"
-                      onClick={() => removeItem(index)}
-                      aria-label={`Remove Item ${index + 1}`}
-                    >
-                      <Trash />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </FieldGroup>
-          </FieldSet>
+          <ItemList
+            control={form.control}
+            errors={form.formState.errors.items}
+          />
 
           {/*  payment method */}
 
@@ -408,9 +285,45 @@ const InvoiceForm = () => {
               </Field>
             )}
           />
+          <FieldSeparator />
+          {/* New Action Buttons Section */}
+          <div className="flex flex-col gap-3 mt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <Copy className="w-4 h-4" />
+                Copy Summary
+              </Button>
 
-          <Button type="submit" onClick={() => form.handleSubmit(onSubmit)()}>
-            Save
+              <Button
+                type="button"
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <Printer className="w-4 h-4" />
+                Print
+              </Button>
+
+              <Button type="button" className="flex items-center gap-2">
+                <FileDown className="w-4 h-4" />
+                Download PDF
+              </Button>
+            </div>
+
+            <Button
+              type="button"
+              variant="ghost"
+              className="text-muted-foreground hover:text-destructive flex items-center gap-2"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Reset Form
+            </Button>
+          </div>
+          <Button type="submit" className="mt-6">
+            Submit
           </Button>
         </FieldGroup>
       </form>
