@@ -8,8 +8,8 @@ import {
   FieldError,
   FieldGroup,
   FieldLabel,
+  FieldLegend,
   FieldSet,
-  FieldTitle,
 } from "../ui/field";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -35,7 +35,9 @@ const ItemList = ({ control, errors }: ItemListProps) => {
     <FieldSet>
       <div className="flex justify-between items-center gap-2">
         <FieldContent>
-          <FieldTitle className="text-lg font-semibold">Items</FieldTitle>
+          <FieldLegend variant="label" className="mb-0">
+            Items
+          </FieldLegend>
           <FieldDescription>Add up to {MAX_ITEMS} items.</FieldDescription>
           {errors?.root && <FieldError errors={[errors.root]} />}
         </FieldContent>
