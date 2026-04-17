@@ -3,7 +3,6 @@
 import { Controller, useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useReactToPrint } from "react-to-print";
 import {
   Field,
   FieldError,
@@ -26,64 +25,22 @@ import { InvoiceValues } from "@/types";
 import ItemList from "./item-list";
 import { defaultInvoiceData } from "@/lib/validators/invoice";
 import ActionBar from "./actions/action-bar";
-import { RefObject, useEffect } from "react";
-// Interface
-interface InvoiceFormProps {
-  onDataChange: (data: InvoiceValues) => void;
-  printRef: RefObject<HTMLDivElement | null>;
-  invoiceData: InvoiceValues;
-}
+import { useEffect } from "react";
+import { generateInvoiceNumber } from "@/utils/generate-invoice";
 
-const InvoiceForm = ({
-  onDataChange,
-  printRef,
-  invoiceData,
-}: InvoiceFormProps) => {
+const InvoiceForm = () => {
   const form = useForm<InvoiceValues>({
     defaultValues: defaultInvoiceData,
     resolver: zodResolver(invoiceSchema),
     mode: "onChange",
   });
-  useEffect(() => {
-    const subscription = form.watch((data) => {
-      onDataChange(data as InvoiceValues);
-    });
-    return () => subscription.unsubscribe();
-  }, [form, onDataChange]);
-  // Print button handler
-  const handlePrint = useReactToPrint({
-    contentRef: printRef,
-    documentTitle: invoiceData.invoiceNumber || "invoice",
-  });
 
-  // Download PDF handler
-  const handleDownloadPDF = async () => {
-    const element = printRef.current;
-    if (!element) return;
-    const { default: html2canvas } = await import("html2canvas");
-    const { default: jsPDF } = await import("jspdf");
-    const canvas = await html2canvas(element, {
-      scale: 3,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-    });
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "pt",
-      format: "a4",
-    });
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const imgHeight = (canvas.height * pageWidth) / canvas.width;
-    pdf.addImage(
-      canvas.toDataURL("image/png"),
-      "PNG",
-      0,
-      0,
-      pageWidth,
-      imgHeight,
-    );
-    pdf.save(`${invoiceData.invoiceNumber || "invoice"}.pdf`);
-  };
+  useEffect(() => {
+    if (!form.getValues("invoiceNumber")) {
+      form.setValue("invoiceNumber", generateInvoiceNumber());
+    }
+  }, [form]);
+
   // --- Handlers ---
 
   const handleReset = () => {
@@ -179,6 +136,7 @@ const InvoiceForm = ({
                     {...field}
                     id={field.name}
                     aria-invalid={fieldState.invalid}
+                    readOnly
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -372,12 +330,7 @@ const InvoiceForm = ({
           />
           <FieldSeparator />
           {/* Action Buttons */}
-          <ActionBar
-            invoiceData={invoiceData} // from props
-            onReset={handleReset}
-            onPrint={handlePrint}
-            printRef={printRef}
-          />
+          <ActionBar onReset={handleReset} />
         </FieldGroup>
       </form>
     </div>
