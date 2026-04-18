@@ -159,20 +159,18 @@ const InvoicePreview = forwardRef<HTMLDivElement>((props, ref) => {
                 </tr>
                 <tr>
                   <td className="border border-zinc-400 p-1.5 font-semibold text-zinc-500">
-                    Tax Rate:
+                    Tax ({data.taxRate ? data.taxRate + "%" : "0%"})
                   </td>
                   <td className="border border-zinc-400 p-1.5 text-right">
-                    {data.taxRate ? data.taxRate + " %" : "0 %"}
+                    {taxAmount.toLocaleString("en-US")} USD
                   </td>
                 </tr>
                 <tr>
                   <td className="border border-zinc-400 p-1.5 font-semibold text-zinc-500">
-                    Discount:
+                    Discount ({data.discount ? data.discount + "%" : "0%"})
                   </td>
                   <td className="border border-zinc-400 p-1.5 text-right text-red-600">
-                    {data.discount
-                      ? data.discount.toLocaleString("en-US") + " USD"
-                      : "0 USD"}
+                    {discountAmount.toLocaleString("en-US")} USD
                   </td>
                 </tr>
                 <tr className="bg-zinc-100">

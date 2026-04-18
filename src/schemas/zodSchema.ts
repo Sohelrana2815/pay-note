@@ -43,8 +43,18 @@ export const invoiceSchema = z.object({
     .min(1, "At least one item is required")
     .max(10, "You can add up to 10 items at a time"),
 
-  taxRate: z.number().optional().or(z.literal(0)),
-  discount: z.number().optional().or(z.literal(0)),
+  taxRate: z
+    .number()
+    .min(0, "Tax rate cannot be negative")
+    .max(100, "Tax rate cannot exceed 100%")
+    .optional()
+    .or(z.literal(0)),
+  discount: z
+    .number()
+    .min(0, "Discount cannot be negative")
+    .max(100, "Discount cannot exceed 100%")
+    .optional()
+    .or(z.literal(0)),
 
   paymentMethod: z
     .string()

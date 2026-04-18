@@ -276,7 +276,11 @@ const InvoiceForm = ({ contentRef }: InvoiceFormProps) => {
                   id={field.name}
                   type="number"
                   min={0}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  max={100}
+                  step="0.01"
+                  onChange={(e) =>
+                    field.onChange(Math.max(0, Math.min(100, Number(e.target.value))))
+                  }
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -296,7 +300,13 @@ const InvoiceForm = ({ contentRef }: InvoiceFormProps) => {
                   id={field.name}
                   type="number"
                   min={0}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
+                  max={100}
+                  step="0.01"
+                  onChange={(e) =>
+                    field.onChange(
+                      Math.max(0, Math.min(100, Number(e.target.value))),
+                    )
+                  }
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />

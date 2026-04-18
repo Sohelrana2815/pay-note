@@ -87,8 +87,11 @@ const ItemList = ({ control, errors }: ItemListProps) => {
                     {...field}
                     id={field.name}
                     type="number"
+                    step={1}
                     min={1}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
+                    onChange={(e) =>
+                      field.onChange(Math.max(1, Number(e.target.value)))
+                    }
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -109,6 +112,7 @@ const ItemList = ({ control, errors }: ItemListProps) => {
                     id={field.name}
                     type="number"
                     min={0}
+                    step="0.01"
                     onChange={(e) => field.onChange(Number(e.target.value))}
                   />
                   {fieldState.invalid && (
