@@ -4,7 +4,7 @@ const Footer = () => {
       {/* This inner div keeps the content centered and constrained  */}
 
       <p className="block text-sm text-body sm:text-center">
-        &copy; 2026 QuickBill. All rights reserved.
+        &copy; 2026 PayNote. All rights reserved.
       </p>
     </footer>
   );

@@ -1,3 +1,0 @@
-I gave you my invoice preview component. Currently, it is a layout for the page that the user will download or print. You already know that I have successfully implemented Redux. Now I want to handle the state data dynamically so the user can see a live preview while typing or changing any data in the invoice form component.
-
-Keep everything clean and structured based on my project’s folder and file structure.
