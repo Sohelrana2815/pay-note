@@ -2,16 +2,19 @@ import { defaultInvoiceData } from "@/lib/validators/invoice";
 import { InvoiceValues } from "@/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: InvoiceValues = defaultInvoiceData;
-
 export const invoiceSlice = createSlice({
   name: "invoice",
-  initialState,
+  initialState: {
+    ...defaultInvoiceData,
+    resetToggle: 0,
+  },
   reducers: {
     setInvoiceData: (state, action: PayloadAction<InvoiceValues>) => {
-      return { ...action.payload };
+      return { ...state, ...action.payload };
     },
-    resetInvoice: () => initialState,
+    resetInvoice: (state) => {
+      state.resetToggle += 1;
+    },
   },
 });
 

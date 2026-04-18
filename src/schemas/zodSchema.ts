@@ -22,7 +22,7 @@ export const invoiceSchema = z.object({
     .string()
     .nonempty("Invoice Number is required")
     .min(3, "Invoice No. must be at least 3 characters"),
-  date: z.date(),
+  date: z.union([z.string(), z.date()]),
   // Client Detail
   clientName: z
     .string()

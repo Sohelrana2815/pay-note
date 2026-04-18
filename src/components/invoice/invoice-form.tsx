@@ -27,6 +27,7 @@ import { defaultInvoiceData } from "@/lib/validators/invoice";
 import ActionBar from "./actions/action-bar";
 import { useEffect } from "react";
 import { generateInvoiceNumber } from "@/utils/generate-invoice";
+import { useAppSelector } from "@/store/hooks";
 
 const InvoiceForm = () => {
   const form = useForm<InvoiceValues>({
@@ -35,6 +36,16 @@ const InvoiceForm = () => {
     mode: "onChange",
   });
 
+  const resetToggle = useAppSelector((state) => state.invoice.resetToggle);
+  useEffect(() => {
+    if (resetToggle > 0) {
+      form.reset({
+        ...defaultInvoiceData,
+        invoiceNumber: generateInvoiceNumber(),
+      });
+    }
+  }, [resetToggle, form]);
+
   useEffect(() => {
     if (!form.getValues("invoiceNumber")) {
       form.setValue("invoiceNumber", generateInvoiceNumber());
@@ -42,10 +53,6 @@ const InvoiceForm = () => {
   }, [form]);
 
   // --- Handlers ---
-
-  const handleReset = () => {
-    form.reset(defaultInvoiceData);
-  };
 
   const onSubmit = (data: InvoiceValues) => {
     console.log("Form Data:", data);
@@ -156,14 +163,12 @@ const InvoiceForm = () => {
                     type="date"
                     id={field.name}
                     aria-invalid={fieldState.invalid}
-                    value={
-                      field.value && !isNaN(new Date(field.value).getTime())
-                        ? new Date(field.value).toISOString().split("T")[0]
-                        : ""
-                    }
+                    value={field.value ? String(field.value).split("T")[0] : ""}
                     onChange={(e) => {
                       const value = e.target.value;
-                      field.onChange(value ? new Date(value) : undefined);
+                      field.onChange(
+                        value ? new Date(value).toISOString() : "",
+                      );
                     }}
                     onBlur={field.onBlur}
                   />
@@ -177,10 +182,10 @@ const InvoiceForm = () => {
           </div>
 
           <FieldSeparator />
+          <FieldTitle className="text-lg font-semibold">
+            Client Details
+          </FieldTitle>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FieldTitle className="text-lg font-semibold">
-              Client Details
-            </FieldTitle>
             {/* 6. Client Name */}
             <Controller
               control={form.control}
@@ -330,7 +335,7 @@ const InvoiceForm = () => {
           />
           <FieldSeparator />
           {/* Action Buttons */}
-          <ActionBar onReset={handleReset} />
+          <ActionBar />
         </FieldGroup>
       </form>
     </div>

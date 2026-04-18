@@ -5,7 +5,7 @@ export const defaultInvoiceData: InvoiceValues = {
   businessName: "",
   logoUrl: "",
   invoiceNumber: "",
-  date: new Date(),
+  date: "",
 
   clientName: "",
   clientEmail: "",

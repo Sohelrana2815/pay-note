@@ -1,17 +1,17 @@
 "use client";
 
 import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
+  FieldTitle,
 } from "../ui/field";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
 import { invoiceSchema, invoiceTypes } from "@/schemas/zodSchema";
 import {
   Select,
@@ -20,21 +20,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-
-import { Copy, FileDown, Printer, RotateCcw } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { InvoiceValues } from "@/types";
 import ItemList from "./item-list";
 import { defaultInvoiceData } from "@/lib/validators/invoice";
+import ActionBar from "./actions/action-bar";
+import { useEffect } from "react";
+import { generateInvoiceNumber } from "@/utils/generate-invoice";
 
 const InvoiceForm = () => {
   const form = useForm<InvoiceValues>({
-  defaultValues: defaultInvoiceData,
+    defaultValues: defaultInvoiceData,
     resolver: zodResolver(invoiceSchema),
     mode: "onChange",
   });
 
+  useEffect(() => {
+    if (!form.getValues("invoiceNumber")) {
+      form.setValue("invoiceNumber", generateInvoiceNumber());
+    }
+  }, [form]);
+
   // --- Handlers ---
+
+  const handleReset = () => {
+    form.reset(defaultInvoiceData);
+  };
 
   const onSubmit = (data: InvoiceValues) => {
     console.log("Form Data:", data);
@@ -74,6 +85,9 @@ const InvoiceForm = () => {
               </Field>
             )}
           />
+          <FieldTitle className="text-lg font-semibold">
+            Business Details
+          </FieldTitle>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* 2. Business Name */}
             <Controller
@@ -122,6 +136,7 @@ const InvoiceForm = () => {
                     {...field}
                     id={field.name}
                     aria-invalid={fieldState.invalid}
+                    readOnly
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
@@ -162,6 +177,9 @@ const InvoiceForm = () => {
           </div>
 
           <FieldSeparator />
+          <FieldTitle className="text-lg font-semibold">
+            Client Details
+          </FieldTitle>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* 6. Client Name */}
             <Controller
@@ -226,6 +244,51 @@ const InvoiceForm = () => {
             errors={form.formState.errors.items}
           />
 
+          <FieldSeparator />
+          <FieldTitle className="text-lg font-semibold">
+            Totals & Adjustments
+          </FieldTitle>
+          {/* 10. Tax Rate */}
+          <Controller
+            control={form.control}
+            name="taxRate"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Tax Rate (%)</FieldLabel>
+                <Input
+                  {...field}
+                  id={field.name}
+                  type="number"
+                  min={0}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+          {/* 11. Discount */}
+          <Controller
+            control={form.control}
+            name="discount"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Discount Rate (%)</FieldLabel>
+                <Input
+                  {...field}
+                  id={field.name}
+                  type="number"
+                  min={0}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+
           {/*  payment method */}
 
           <Controller
@@ -266,42 +329,8 @@ const InvoiceForm = () => {
             )}
           />
           <FieldSeparator />
-          {/* New Action Buttons Section */}
-          <div className="flex flex-col gap-3 mt-6">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <Copy className="w-4 h-4" />
-                Copy Summary
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <Printer className="w-4 h-4" />
-                Print
-              </Button>
-
-              <Button type="button" className="flex items-center gap-2">
-                <FileDown className="w-4 h-4" />
-                Download PDF
-              </Button>
-            </div>
-
-            <Button
-              type="button"
-              variant="ghost"
-              className="text-muted-foreground hover:text-destructive flex items-center gap-2"
-            >
-              <RotateCcw className="w-4 h-4" />
-              Reset Form
-            </Button>
-          </div>
+          {/* Action Buttons */}
+          <ActionBar onReset={handleReset} />
         </FieldGroup>
       </form>
     </div>
