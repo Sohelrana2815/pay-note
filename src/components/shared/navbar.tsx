@@ -24,7 +24,7 @@ const Navbar = () => {
 
         <div className="flex items-center gap-3">
           {/* Theme toggle button */}
-          <span className="text-gray-400">
+          {/* <span className="text-gray-400">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="18"
@@ -40,8 +40,8 @@ const Navbar = () => {
                 d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707"
               />
             </svg>
-          </span>
-          <button className="relative inline-flex h-6 w-11 items-center rounded-full bg-blue-100 transition-colors focus:outline-none dark:bg-blue-600">
+          </span> */}
+          {/* <button className="relative inline-flex h-6 w-11 items-center rounded-full bg-blue-100 transition-colors focus:outline-none dark:bg-blue-600">
             <span className="inline-block h-4 w-4 transform rounded-full bg-white transition-transform translate-x-1 dark:translate-x-6" />
           </button>
           <span className="text-gray-400">
@@ -60,7 +60,7 @@ const Navbar = () => {
                 d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
               />
             </svg>
-          </span>
+          </span> */}
         </div>
       </div>
     </header>

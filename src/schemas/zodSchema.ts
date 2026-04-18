@@ -43,13 +43,18 @@ export const invoiceSchema = z.object({
     .min(1, "At least one item is required")
     .max(10, "You can add up to 10 items at a time"),
 
-  taxRate: z.number().optional().or(z.literal("")),
-  discount: z.number().optional().or(z.literal("")),
+  taxRate: z.number().optional().or(z.literal(0)),
+  discount: z.number().optional().or(z.literal(0)),
 
   paymentMethod: z
     .string()
     .nonempty("Payment Method is required")
     .min(3, "Payment Method must be at least 3 characters long")
     .max(100, "Payment Method must be at most 100 characters long"),
-  notes: z.string().optional().or(z.literal("")),
+  notes: z
+    .string()
+    .min(3, "Notes must be at least 3 characters long")
+    .max(100, "Notes cannot exceed 100 characters long")
+    .optional()
+    .or(z.literal("")),
 });

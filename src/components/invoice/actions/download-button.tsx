@@ -3,7 +3,7 @@ import { FileDown } from "lucide-react";
 
 const DownloadButton = () => {
   return (
-    <Button className="flex gap-2">
+    <Button type="button" className="flex gap-2">
       <FileDown className="w-4 h-4" />
       Download PDF
     </Button>

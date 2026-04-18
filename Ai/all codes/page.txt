@@ -12,7 +12,7 @@ export default function Home() {
          items-start prevents the preview from stretching vertically.
       */}
       <div className="flex flex-col lg:flex-row justify-between gap-10 max-w-7xl mx-auto px-4 pb-20">
-        <div className="w-full lg:w-[550px] shrink-0">
+        <div className="w-full lg:w-137.5 shrink-0">
           <InvoiceForm />
         </div>
 
@@ -25,4 +25,4 @@ export default function Home() {
   );
 }
 
-
+// relative left-[50%] right-[50%] -ml-[50vw] -mr-[50vw] w-screen my-12 border-t border-gray-200

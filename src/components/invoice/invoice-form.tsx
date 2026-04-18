@@ -1,6 +1,6 @@
 "use client";
 
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -27,14 +27,25 @@ import { defaultInvoiceData } from "@/lib/validators/invoice";
 import ActionBar from "./actions/action-bar";
 import { useEffect } from "react";
 import { generateInvoiceNumber } from "@/utils/generate-invoice";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setInvoiceData } from "@/store/features/invoiceSlice";
 
-const InvoiceForm = () => {
+interface InvoiceFormProps {
+  contentRef: React.RefObject<HTMLDivElement | null>;
+}
+
+const InvoiceForm = ({ contentRef }: InvoiceFormProps) => {
+  const dispatch = useAppDispatch();
   const form = useForm<InvoiceValues>({
     defaultValues: defaultInvoiceData,
     resolver: zodResolver(invoiceSchema),
     mode: "onChange",
   });
+
+  const formData = useWatch({ control: form.control });
+  useEffect(() => {
+    dispatch(setInvoiceData(formData as InvoiceValues));
+  }, [formData, dispatch]);
 
   const resetToggle = useAppSelector((state) => state.invoice.resetToggle);
   useEffect(() => {
@@ -335,7 +346,8 @@ const InvoiceForm = () => {
           />
           <FieldSeparator />
           {/* Action Buttons */}
-          <ActionBar />
+          <ActionBar contentRef={contentRef} />
+          {/* <Button type="submit">Submit</Button> */}
         </FieldGroup>
       </form>
     </div>
